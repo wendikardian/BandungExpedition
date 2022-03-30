@@ -156,14 +156,31 @@ class DetailMobilePage extends StatelessWidget{
 }
 
 
-class DetailWebPage extends StatelessWidget{
-  final TourismPlace place;
-  const DetailWebPage({required this.place});
+class DetailWebPage extends StatefulWidget {
+
+  final TourismPlace place;  
+
+  DetailWebPage({required this.place});
 
   @override
+  _DetailWebPageState createState() => _DetailWebPageState();
+}
+
+class _DetailWebPageState extends State<DetailWebPage> {
+  
+  // final _scrollController = ScrollController();
+  @override
   Widget build(BuildContext context){
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      body: Column(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 16, horizontal: 64
+        ),
+        child: Center(
+          child: Container(
+            width: 1200,
+             child:Column(
         crossAxisAlignment : CrossAxisAlignment.start,
         children: [
           Text('Wisata Bandung', style : TextStyle(
@@ -176,7 +193,31 @@ class DetailWebPage extends StatelessWidget{
             children: [
               Expanded(
                 child: Column(
-                  children : []
+                  children : [
+                    ClipRRect(
+                      child: Image.asset(widget.place.imageAsset),
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    SizedBox(height: 16),
+                    Container(
+                      height : 150,
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: widget.place.imageUrls.map((url){
+                          return Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(url),
+                            )
+                          );
+                        }
+                      ).toList(),
+                    )
+                    )
+                    
+                  ]
                 )
               ),
               SizedBox(width: 32),
@@ -189,7 +230,7 @@ class DetailWebPage extends StatelessWidget{
                       children: <Widget>[
                         Container(
                             child: Text(
-                              place.name,
+                              widget.place.name,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize : 30.0,
@@ -205,7 +246,7 @@ class DetailWebPage extends StatelessWidget{
                                 Icon(Icons.calendar_today),
                                 SizedBox(width: 8),
                                 Text(
-                                  place.openDays,
+                                  widget.place.openDays,
                                   style : informationTextStyle,
                                 ),
                               ],
@@ -218,7 +259,7 @@ class DetailWebPage extends StatelessWidget{
                             Icon(Icons.access_time),
                             SizedBox(width: 8),
                             Text(
-                              place.openTime,
+                              widget.place.openTime,
                               style: informationTextStyle,
                             )
                           ]
@@ -229,21 +270,21 @@ class DetailWebPage extends StatelessWidget{
                             Icon(Icons.monetization_on),
                             SizedBox(width : 8),
                             Text(
-                              place.ticketPrice,
+                              widget.place.ticketPrice,
                               style: informationTextStyle
                             )
                           ]
                         ),
                         Container(
-                          padding: EdgeInsets.symmetric(vertical : 16.0),
+                          padding: EdgeInsets.all(16.0),
                           child: Text(
-                            place.description,
+                            widget.place.description,
                             textAlign : TextAlign.justify,
                             style: TextStyle(
                               fontSize: 16.0, fontFamily: 'Oxygen'
                             )
                           )
-                        )
+                        ),
                       ]
                     )
                   )
@@ -254,9 +295,18 @@ class DetailWebPage extends StatelessWidget{
         ]
         
       ),
+          )
+        )
+       
+      )
+      
       
 
     );
   }
-
+  @override
+  void disposse(){
+    // _scrollController.dispose();
+    super.dispose();
+  }
 }
